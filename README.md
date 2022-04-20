@@ -3,7 +3,7 @@
 
 An online podcast directory where users can search and save podcasts.
 
-This project is based off of the [Podcast Directory](https://github.com/DevJamGroup/Projects-List/blob/master/Projects/2-Intermediate/Podcast-Directory-App.md) project requirements. 
+This project is based off of the [Dev Jam Podcast Directory](https://github.com/DevJamGroup/Projects-List/blob/master/Projects/2-Intermediate/Podcast-Directory-App.md) project requirements. 
 
 **[Live Site](https://podstar.vercel.app/)**
 
