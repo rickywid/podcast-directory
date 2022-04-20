@@ -6,6 +6,10 @@ img {
   border-radius: 5px;
 }
 
+.thumbnail:hover {
+  cursor: pointer;
+}
+
 .flex-after::after {
   content: "";
   flex: auto;

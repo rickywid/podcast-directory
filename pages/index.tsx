@@ -65,7 +65,7 @@ const Home: NextPage = () => {
 
     const displayContent = () => {
         if (showMyList) {
-            return <Box>
+            return myList.length ? (<Box>
                 <Heading as="h2" size="sm" mb={5}>My Podcasts</Heading>
                 <Flex
                     flexWrap={"wrap"}
@@ -78,7 +78,14 @@ const Home: NextPage = () => {
                         updateMyList={updateMyList}
                     />
                 </Flex>
-            </Box>
+            </Box>) : (
+                <Flex height="100vh">
+                    <Box margin="auto">
+                        <img style={{ margin: "0 auto" }} src={'/assets/boombox.png'} alt="boombox" />
+                        <Heading as="h2" size="lg">You have no saved podcasts.</Heading>
+                    </Box>
+                </Flex>
+            )
         }
 
         if (searchResults.length) {
@@ -195,7 +202,15 @@ const Home: NextPage = () => {
                     <Heading mb={5} as="h1" size="md" onClick={() => {
                         setShowMyList(false)
                         setSearchResults([])
-                    }}>Podcast Directory</Heading>
+                    }}
+                        border="3px dashed black"
+                        textAlign={"center"}
+                        padding={1}
+                        _hover={{
+                            cursor: "pointer",
+                            color: "#777"
+                        }}
+                    >Podstar</Heading>
                     <Box>
                         <Input
                             placeholder="Search"
@@ -230,7 +245,7 @@ const Home: NextPage = () => {
                             categoriesList={showAll ? data?.categories : data?.categories.slice(0, 50)}
                             skeletonItems={skeletonItems}
                         />
-                        {showAll ? <Text onClick={() => setShowAll(!showAll)}>Show less</Text> : <Text onClick={() => setShowAll(!showAll)}>Show all</Text>}
+                        {showAll ? <Text _hover={{cursor: "pointer", color:"black"}} onClick={() => setShowAll(!showAll)}>Show less</Text> : <Text _hover={{cursor: "pointer", color:"black"}} onClick={() => setShowAll(!showAll)}>Show all</Text>}
                     </Box>
                 </Box>
                 <Box flexBasis={"85%"}>

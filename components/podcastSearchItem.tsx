@@ -112,7 +112,7 @@ const PodcastSearchItem = ({ data, updateMyList }: Props) => {
                 </DrawerContent>
             </Drawer>
             <Box m={2} maxW="115px" ref={btnRef} onClick={() => selectItem(data)}>
-                <img src={data.image || data.image} alt={data.title} height="115px" width="115px" />
+                <img className="thumbnail" src={data.image || data.image} alt={data.title} height="115px" width="115px" />
                 <Text fontSize="smaller" mt={2} lineHeight="1.2">{truncate(data.title)}</Text>
             </Box>
         </>

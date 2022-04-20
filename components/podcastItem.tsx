@@ -10,7 +10,8 @@ import {
     useDisclosure,
     Heading,
     Tag,
-    Button
+    Button,
+    useToast
 } from '@chakra-ui/react'
 import truncate from '../utils/truncate'
 
@@ -26,6 +27,7 @@ const PodcastItem = ({ data, updateMyList }: Props) => {
     const [isFavourite, setIsFavourite] = useState<boolean>(false)
     const { isOpen, onOpen, onClose } = useDisclosure()
     const btnRef = useRef(null)
+    const toast = useToast()
 
     const selectItem = async (p: any) => {
         onOpen()
@@ -72,16 +74,31 @@ const PodcastItem = ({ data, updateMyList }: Props) => {
             if (updateMyList) {
                 updateMyList(data)
             }
+
+            toast({
+                title: 'Removed from your list.',
+                status: 'success',
+                duration: 3000,
+                isClosable: true,
+              })
+
             onClose()
         } else {
             let myList = JSON.parse(localStorage.getItem('my-list')!)
             myList.push(feedUrl)
             localStorage.setItem('my-list', JSON.stringify(myList))
-            // data = data.push(selected)
 
             if (updateMyList) {
                 updateMyList(data)
             }
+
+            toast({
+                title: 'Added to your list.',
+                status: 'success',
+                duration: 3000,
+                isClosable: true,
+              })
+              
             onClose()
         }
     }
@@ -116,7 +133,7 @@ const PodcastItem = ({ data, updateMyList }: Props) => {
             {data.map((p: any, i: number) => {
                 return (
                     <Box key={i} m={2} maxW="115px" ref={btnRef} onClick={() => selectItem(p)}>
-                        <img src={p.image || p.feedImage} alt={p.feedTitle} height="115px" width="115px" />
+                        <img className="thumbnail" src={p.image || p.feedImage} alt={p.feedTitle} height="115px" width="115px" />
                         <Text fontSize="smaller" mt={2} lineHeight="1.2">{truncate(p.title)}</Text>
                     </Box>
 
