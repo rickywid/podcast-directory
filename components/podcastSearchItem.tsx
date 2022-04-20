@@ -46,6 +46,12 @@ const PodcastSearchItem = ({ data }: any) => {
         })
     }
 
+    const handleAddToFav = (id: number) => {
+        const myList = localStorage.getItem('my-list')
+        console.log(myList)
+        // localStorage.setItem('my-list',)
+    }
+
     return (
         <>
             <Drawer
@@ -71,6 +77,7 @@ const PodcastSearchItem = ({ data }: any) => {
                                 colorScheme={"yellow"}
                                 mt={5}
                             >Listen Now</Button>
+                            <Button width="100%" mt={5} onClick={(() => handleAddToFav(selected?.id))}>Add To Favourites</Button>
                         </a>
                     </DrawerBody>
                 </DrawerContent>

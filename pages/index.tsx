@@ -18,9 +18,16 @@ const Home: NextPage = () => {
     const [data, setData] = useState<any>()
     const [showAll, setShowAll] = useState<boolean>(false)
     const [searchTerm, setSearchTerm] = useState<string>('')
+    const [showMyList, setShowMyList] = useState<boolean>(false)
+    const [myList, setMyList] = useState<[]>([])
     const inputRef = useRef<any>(null)
 
     useEffect(() => {
+
+        if (!localStorage.getItem('my-list')) {
+            localStorage.setItem('my-list', '[]')
+        }
+
         fetch('/api/hello').then(res => {
             return res.json()
         }).then(data => {
@@ -35,6 +42,7 @@ const Home: NextPage = () => {
 
     const handleSearch = async () => {
 
+        setShowMyList(false)
         let keyword
 
         if (inputRef.current) {
@@ -55,6 +63,115 @@ const Home: NextPage = () => {
         inputRef.current.value = ""
     }
 
+    const displayContent = () => {
+        if (showMyList) {
+            return <Box>
+                <Heading as="h2" size="sm" mb={5}>My Podcasts</Heading>
+                <Flex
+                    flexWrap={"wrap"}
+                    alignContent="flex-start"
+                    className="flex-after"
+                    width="100%"
+                >
+                    <PodcastItem
+                        data={myList}
+                        updateMyList={updateMyList}
+                    />
+                </Flex>
+            </Box>
+        }
+
+        if (searchResults.length) {
+            return (
+                <Box>
+                    <Heading as="h2" size="sm" mb={5}>
+                        Search Results for {searchTerm}
+                        <Button
+                            leftIcon={<CloseIcon fontSize={"xx-small"} />}
+                            colorScheme='teal'
+                            variant='solid'
+                            size="xs"
+                            onClick={() => setSearchResults([])}
+                            ml={5}
+                        >
+                            clear search
+                        </Button>
+                    </Heading>
+                    <SearchResults results={searchResults} />
+                </Box>
+            )
+        } else {
+            if (!data) {
+                return (
+                    <Box>
+                        <SkeletonPodcastList />
+                        <SkeletonPodcastList />
+                        <SkeletonPodcastList />
+                    </Box>
+                )
+            } else {
+                return (
+                    <Box>
+                        <Heading as="h2" size="sm" mb={5}>Popular & Trending</Heading>
+                        <Flex
+                            flexWrap={"wrap"}
+                            alignContent="flex-start"
+                            className="flex-after"
+                            width="100%"
+                            justifyContent={{
+                                base: "space-between",
+                                md: "initial"
+                            }}
+                        >
+                            <PodcastItem data={data.trending} />
+                        </Flex>
+                        <Divider mt={5} mb={5} />
+                        <Heading as="h2" size="sm" mb={5}>Sports</Heading>
+                        <Flex
+                            flexWrap={"wrap"}
+                            alignContent="flex-start"
+                            className="flex-after"
+                            width="100%"
+                            justifyContent={{
+                                base: "space-between",
+                                md: "initial"
+                            }}
+                        >
+                            <PodcastItem data={data.random} />
+                        </Flex>
+                        <Divider mt={5} mb={5} />
+                        <Heading as="h2" size="sm" mb={5}>Latest Podcasts</Heading>
+                        <Flex
+                            flexWrap={"wrap"}
+                            alignContent="flex-start"
+                            className="flex-after"
+                            width="100%"
+                        >
+                            <PodcastItem data={data.recent} />
+                        </Flex>
+                    </Box>
+                )
+            }
+        }
+    }
+
+    const handleOnClick = async () => {
+        setShowMyList(true)
+        const res = await fetch('/api/my-list', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ list: localStorage.getItem('my-list') })
+        })
+        const data = await res.json()
+        setMyList(data.data)
+    }
+
+    const updateMyList = (list: []) => {
+        setMyList(list)
+    }
+
     return (
         <Container maxW={"container.xl"}>
             <Head>
@@ -62,12 +179,23 @@ const Home: NextPage = () => {
                 <meta name="description" content="Generated by create next app" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <Flex>
+            <Flex
+                display={{
+                    base: 'block',
+                    md: 'flex'
+                }}
+            >
                 <Box
                     flexBasis={"15%"}
-                    mr={10}
+                    mr={{
+                        base: 0,
+                        md: 10
+                    }}
                 >
-                    <p>Podcast Directory</p>
+                    <Heading mb={5} as="h1" size="md" onClick={() => {
+                        setShowMyList(false)
+                        setSearchResults([])
+                    }}>Podcast Directory</Heading>
                     <Box>
                         <Input
                             placeholder="Search"
@@ -82,88 +210,34 @@ const Home: NextPage = () => {
                             colorScheme={"yellow"}
                             onClick={handleSearch}
                             leftIcon={<Search2Icon />}
+                            mb={5}
                         >Search</Button>
+                        <Button
+                            width={{
+                                base: "100%",
+                                md: "auto"
+                            }}
+                            leftIcon={<AiTwotoneHeart fill='red' />}
+                            onClick={handleOnClick}>My List</Button>
                     </Box>
                     <Divider mt={5} mb={5} />
-                    <Heading as="h2" size="sm" mb={5}>Categories</Heading>
-                    <CategoriesList
-                        categoriesList={showAll ? data?.categories : data?.categories.slice(0, 50)}
-                        skeletonItems={skeletonItems}
-                    />
-                    {showAll ? <Text onClick={() => setShowAll(!showAll)}>Show less</Text> : <Text onClick={() => setShowAll(!showAll)}>Show all</Text>}
+                    <Box display={{
+                        base: 'none',
+                        md: "block"
+                    }}>
+                        <Heading as="h2" size="sm" mb={5}>Categories</Heading>
+                        <CategoriesList
+                            categoriesList={showAll ? data?.categories : data?.categories.slice(0, 50)}
+                            skeletonItems={skeletonItems}
+                        />
+                        {showAll ? <Text onClick={() => setShowAll(!showAll)}>Show less</Text> : <Text onClick={() => setShowAll(!showAll)}>Show all</Text>}
+                    </Box>
                 </Box>
                 <Box flexBasis={"85%"}>
-                    <Flex alignItems="center" float={"right"}>
-                        <AiTwotoneHeart fill='red' />
-                        <Link href="/my-list">
-                            <a style={{ marginLeft: "5px" }}>
-                                My List
-                            </a>
-                        </Link>
-                    </Flex>
-                    {searchResults.length ? (
-                        <Box>
-                            <Heading as="h2" size="sm" mb={5}>
-                                Search Results for {searchTerm}
-                                <Button
-                                    leftIcon={<CloseIcon fontSize={"xx-small"} />}
-                                    colorScheme='teal'
-                                    variant='solid'
-                                    size="xs"
-                                    onClick={() => setSearchResults([])}
-                                    ml={5}
-                                >
-                                    clear search
-                                </Button>
-                            </Heading>
-                            <SearchResults results={searchResults} />
-                        </Box>
-                    ) : (
-                        <>
-                            {!data ? (
-                                <Box>
-                                    <SkeletonPodcastList />
-                                    <SkeletonPodcastList />
-                                    <SkeletonPodcastList />
-                                </Box>
-                            ) : (
-                                <Box>
-                                    <Heading as="h2" size="sm" mb={5}>Popular & Trending</Heading>
-                                    <Flex
-                                        flexWrap={"wrap"}
-                                        alignContent="flex-start"
-                                        justifyContent={"space-between"}
-                                        className="flex-after"
-                                        width="100%"
-                                    >
-                                        <PodcastItem data={data.trending} />
-                                    </Flex>
-                                    <Divider mt={5} mb={5} />
-                                    <Heading as="h2" size="sm" mb={5}>Sports</Heading>
-                                    <Flex
-                                        justifyContent={"space-between"}
-                                        className="flex-after"
-                                    >
-                                        <PodcastItem data={data.random} />
-                                    </Flex>
-                                    <Divider mt={5} mb={5} />
-                                    <Heading as="h2" size="sm" mb={5}>Latest Podcasts</Heading>
-                                    <Flex
-                                        flexWrap={"wrap"}
-                                        alignContent="flex-start"
-                                        justifyContent={"space-between"}
-                                        className="flex-after"
-                                        width="100%"
-                                    >
-                                        <PodcastItem data={data.recent} />
-                                    </Flex>
-                                </Box>
-                            )}
-                        </>
-                    )}
+                    {displayContent()}
                 </Box>
             </Flex>
-        </Container>
+        </Container >
     )
 }
 

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
     Box,
     Text,
@@ -15,8 +15,15 @@ import {
 import truncate from '../utils/truncate'
 
 
-const PodcastItem = ({ data }: any) => {
-    const [selected, setSelected] = useState<any>()
+interface Props {
+    data: any;
+    updateMyList?: (list: []) => void
+}
+
+
+const PodcastItem = ({ data, updateMyList }: Props) => {
+    const [selected, setSelected] = useState<any>({ id: null })
+    const [isFavourite, setIsFavourite] = useState<boolean>(false)
     const { isOpen, onOpen, onClose } = useDisclosure()
     const btnRef = useRef(null)
 
@@ -31,8 +38,15 @@ const PodcastItem = ({ data }: any) => {
         })
 
         const data = await res.json()
-        console.log(data.data.feed)
         setSelected(data.data.feed)
+
+        checkIsFavourite(data.data.feed.url)
+    }
+
+    const checkIsFavourite = (feedUrl: string) => {
+        const myList = JSON.parse(localStorage.getItem('my-list')!)
+        const bool = myList.indexOf(feedUrl) > -1
+        setIsFavourite(bool)
     }
 
     const displayCategoryTags = (categories: any) => {
@@ -45,6 +59,31 @@ const PodcastItem = ({ data }: any) => {
         return catList.map((c: any, i: number) => {
             return <Tag key={i} colorScheme={"green"} size="sm" mr={2}>{c}</Tag>
         })
+    }
+
+    const handleOnClick = (selected: any, feedUrl: string) => {
+        setIsFavourite(!isFavourite)
+        if (isFavourite) {
+            let myList = JSON.parse(localStorage.getItem('my-list')!)
+            myList = myList.filter((url: string) => url !== feedUrl)
+            data = data.filter((d: any) => d.url !== feedUrl)
+            localStorage.setItem('my-list', JSON.stringify(myList))
+
+            if (updateMyList) {
+                updateMyList(data)
+            }
+            onClose()
+        } else {
+            let myList = JSON.parse(localStorage.getItem('my-list')!)
+            myList.push(feedUrl)
+            localStorage.setItem('my-list', JSON.stringify(myList))
+            // data = data.push(selected)
+
+            if (updateMyList) {
+                updateMyList(data)
+            }
+            onClose()
+        }
     }
 
     return (
@@ -66,7 +105,11 @@ const PodcastItem = ({ data }: any) => {
                             {displayCategoryTags(selected?.categories)}
                         </Box>
                         <a href={selected?.link} target="_blank"><Button width="100%" mt={5} colorScheme="yellow">Listen Now</Button></a>
-                        <Button width="100%" mt={5}>Add To Favourites</Button>
+                        <Button
+                            width="100%"
+                            mt={5}
+                            onClick={(() => handleOnClick(selected, selected?.url))}
+                        >{isFavourite ? 'Remove from List' : 'Add to List'}</Button>
                     </DrawerBody>
                 </DrawerContent>
             </Drawer>
