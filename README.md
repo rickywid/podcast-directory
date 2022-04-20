@@ -1,34 +1,30 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Podstar (Podcast Directory)
+![screenshot](https://i.imgur.com/wrmUZpM.png)
 
-## Getting Started
+An online podcast directory where users can search and save podcasts.
 
-First, run the development server:
+This project is based off of the [Podcast Directory](https://github.com/DevJamGroup/Projects-List/blob/master/Projects/2-Intermediate/Podcast-Directory-App.md) project requirements. 
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+**[Live Site](https://podstar.vercel.app/)**
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Technologies
+- [NextJS](https://nextjs.org/)
+- [Podcast Index API](https://podcastindex.org/)
+- [Chakra UI](https://chakra-ui.com/)
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Local Development
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Clone application:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+`$ git clone https://github.com/rickywid/podcast-directory.git`
 
-## Learn More
+Install packages:
 
-To learn more about Next.js, take a look at the following resources:
+`$ cd podcast-directory && npm install`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Run application:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+`$ npm run dev`
 
-## Deploy on Vercel
+open *localhost:3000* in web browser
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
