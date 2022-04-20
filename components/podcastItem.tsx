@@ -104,7 +104,7 @@ const PodcastItem = ({ data, updateMyList }: Props) => {
                         <Box mt={5}>
                             {displayCategoryTags(selected?.categories)}
                         </Box>
-                        <a href={selected?.link} target="_blank"><Button width="100%" mt={5} colorScheme="yellow">Listen Now</Button></a>
+                        <a href={selected?.link} target="_blank" rel="noreferrer"><Button width="100%" mt={5} colorScheme="yellow">Listen Now</Button></a>
                         <Button
                             width="100%"
                             mt={5}

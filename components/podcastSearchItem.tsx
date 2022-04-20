@@ -14,8 +14,14 @@ import {
 } from '@chakra-ui/react'
 import truncate from '../utils/truncate'
 
-const PodcastSearchItem = ({ data }: any) => {
+interface Props {
+    data: any;
+    updateMyList?: (list: []) => void
+}
+
+const PodcastSearchItem = ({ data, updateMyList }: Props) => {
     const [selected, setSelected] = useState<any>()
+    const [isFavourite, setIsFavourite] = useState<boolean>(false)
     const { isOpen, onOpen, onClose } = useDisclosure()
     const btnRef = useRef(null)
 
@@ -41,15 +47,34 @@ const PodcastSearchItem = ({ data }: any) => {
             catList.push(categories[prop])
         }
 
-        return catList.map((c: any) => {
-            return <Tag colorScheme={"green"} size="sm" mr={2}>{c}</Tag>
+        return catList.map((c: any, i: number) => {
+            return <Tag key={i} colorScheme={"green"} size="sm" mr={2}>{c}</Tag>
         })
     }
 
-    const handleAddToFav = (id: number) => {
-        const myList = localStorage.getItem('my-list')
-        console.log(myList)
-        // localStorage.setItem('my-list',)
+    const handleOnClick = (selected: any, feedUrl: string) => {
+        setIsFavourite(!isFavourite)
+        if (isFavourite) {
+            let myList = JSON.parse(localStorage.getItem('my-list')!)
+            myList = myList.filter((url: string) => url !== feedUrl)
+            data = data.filter((d: any) => d.url !== feedUrl)
+            localStorage.setItem('my-list', JSON.stringify(myList))
+
+            if (updateMyList) {
+                updateMyList(data)
+            }
+            onClose()
+        } else {
+            let myList = JSON.parse(localStorage.getItem('my-list')!)
+            myList.push(feedUrl)
+            localStorage.setItem('my-list', JSON.stringify(myList))
+            // data = data.push(selected)
+
+            if (updateMyList) {
+                updateMyList(data)
+            }
+            onClose()
+        }
     }
 
     return (
@@ -71,14 +96,18 @@ const PodcastSearchItem = ({ data }: any) => {
                             {displayCategoryTags(selected?.categories)}
                             <Tag size="sm" colorScheme={"red"}>{selected?.explicity ? 'NSFW' : 'SFW'}</Tag>
                         </Box>
-                        <a href={selected?.link} target="_blank">
+                        <a href={selected?.link} target="_blank" rel="noreferrer">
                             <Button
                                 width="100%"
                                 colorScheme={"yellow"}
                                 mt={5}
                             >Listen Now</Button>
-                            <Button width="100%" mt={5} onClick={(() => handleAddToFav(selected?.id))}>Add To Favourites</Button>
                         </a>
+                        <Button
+                            width="100%"
+                            mt={5}
+                            onClick={(() => handleOnClick(selected, selected?.url))}
+                        >{isFavourite ? 'Remove from List' : 'Add to List'}</Button>
                     </DrawerBody>
                 </DrawerContent>
             </Drawer>
