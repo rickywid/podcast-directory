@@ -80,6 +80,7 @@ const PodcastItem = ({ data, updateMyList }: Props) => {
                 status: 'success',
                 duration: 3000,
                 isClosable: true,
+                position: 'bottom-right'
               })
 
             onClose()
@@ -97,6 +98,7 @@ const PodcastItem = ({ data, updateMyList }: Props) => {
                 status: 'success',
                 duration: 3000,
                 isClosable: true,
+                position: 'bottom-right'
               })
               
             onClose()

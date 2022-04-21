@@ -35,6 +35,8 @@ const Home: NextPage = () => {
                 categories: data.categories.feeds,
                 trending: data.trending.feeds,
                 random: data.randomEps.episodes,
+                random2: data.randomEps2.episodes,
+                random3: data.randomEps3.episodes,
                 recent: data.recentEps.feeds
             })
         })
@@ -133,7 +135,17 @@ const Home: NextPage = () => {
                             <PodcastItem data={data.trending} />
                         </Flex>
                         <Divider mt={5} mb={5} />
-                        <Heading as="h2" size="sm" mb={5}>Sports</Heading>
+                        <Heading as="h2" size="sm" mb={5}>Latest Podcasts</Heading>
+                        <Flex
+                            flexWrap={"wrap"}
+                            alignContent="flex-start"
+                            className="flex-after"
+                            width="100%"
+                        >
+                            <PodcastItem data={data.recent} />
+                        </Flex>
+                        <Divider mt={5} mb={5} />
+                        <Heading as="h2" size="sm" mb={5}>Video Games</Heading>
                         <Flex
                             flexWrap={"wrap"}
                             alignContent="flex-start"
@@ -147,14 +159,32 @@ const Home: NextPage = () => {
                             <PodcastItem data={data.random} />
                         </Flex>
                         <Divider mt={5} mb={5} />
-                        <Heading as="h2" size="sm" mb={5}>Latest Podcasts</Heading>
+                        <Heading as="h2" size="sm" mb={5}>Science</Heading>
                         <Flex
                             flexWrap={"wrap"}
                             alignContent="flex-start"
                             className="flex-after"
                             width="100%"
+                            justifyContent={{
+                                base: "space-between",
+                                md: "initial"
+                            }}
                         >
-                            <PodcastItem data={data.recent} />
+                            <PodcastItem data={data.random2} />
+                        </Flex>
+                        <Divider mt={5} mb={5} />
+                        <Heading as="h2" size="sm" mb={5}>Technology</Heading>
+                        <Flex
+                            flexWrap={"wrap"}
+                            alignContent="flex-start"
+                            className="flex-after"
+                            width="100%"
+                            justifyContent={{
+                                base: "space-between",
+                                md: "initial"
+                            }}
+                        >
+                            <PodcastItem data={data.random3} />
                         </Flex>
                     </Box>
                 )
@@ -245,7 +275,7 @@ const Home: NextPage = () => {
                             categoriesList={showAll ? data?.categories : data?.categories.slice(0, 50)}
                             skeletonItems={skeletonItems}
                         />
-                        {showAll ? <Text _hover={{cursor: "pointer", color:"black"}} onClick={() => setShowAll(!showAll)}>Show less</Text> : <Text _hover={{cursor: "pointer", color:"black"}} onClick={() => setShowAll(!showAll)}>Show all</Text>}
+                        {showAll ? <Text _hover={{ cursor: "pointer", color: "black" }} onClick={() => setShowAll(!showAll)}>Show less</Text> : <Text _hover={{ cursor: "pointer", color: "black" }} onClick={() => setShowAll(!showAll)}>Show all</Text>}
                     </Box>
                 </Box>
                 <Box flexBasis={"85%"}>

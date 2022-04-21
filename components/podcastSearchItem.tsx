@@ -10,7 +10,8 @@ import {
     useDisclosure,
     Heading,
     Tag,
-    Button
+    Button, 
+    useToast
 } from '@chakra-ui/react'
 import truncate from '../utils/truncate'
 
@@ -24,6 +25,7 @@ const PodcastSearchItem = ({ data, updateMyList }: Props) => {
     const [isFavourite, setIsFavourite] = useState<boolean>(false)
     const { isOpen, onOpen, onClose } = useDisclosure()
     const btnRef = useRef(null)
+    const toast = useToast()
 
     const selectItem = async (p: any) => {
         onOpen()
@@ -36,7 +38,6 @@ const PodcastSearchItem = ({ data, updateMyList }: Props) => {
         })
 
         const data = await res.json()
-        console.log(data.data.feed)
         setSelected(data.data.feed)
     }
 
@@ -63,6 +64,15 @@ const PodcastSearchItem = ({ data, updateMyList }: Props) => {
             if (updateMyList) {
                 updateMyList(data)
             }
+
+            toast({
+                title: 'Removed from your list.',
+                status: 'success',
+                duration: 3000,
+                isClosable: true,
+                position: 'bottom-right'
+              })
+
             onClose()
         } else {
             let myList = JSON.parse(localStorage.getItem('my-list')!)
@@ -73,6 +83,15 @@ const PodcastSearchItem = ({ data, updateMyList }: Props) => {
             if (updateMyList) {
                 updateMyList(data)
             }
+
+            toast({
+                title: 'Added to your list.',
+                status: 'success',
+                duration: 3000,
+                isClosable: true,
+                position: 'bottom-right'
+              })
+
             onClose()
         }
     }
